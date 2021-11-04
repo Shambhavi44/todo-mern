@@ -1,34 +1,8 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Grid,
-  // makeStyles,
-  Modal,
-  TextField,
-  Typography,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import CardDisplay from "./CardDisplay";
-import axios from 'axios';
-
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     display: "flex",
-//     textAlign: "center",
-//     width: 300,
-//     marginLeft: 100,
-//     marginTop: 200,
-//   },
-//   hidden: {
-//     display: "none",
-//   },
-//   button: {
-//     background: "green",
-//   },
-//   label: {
-//     backgroundColor: "white",
-//   },
-// }));
+import { getTods } from "../services/todos/index";
 
 const Home = () => {
   const style = {
@@ -41,9 +15,9 @@ const Home = () => {
     boxShadow: 24,
     p: 4,
   };
-  // const classes = useStyles();
 
   const [open, setOpen] = useState(false);
+  const [todosData, setTodosData] = useState([]);
   const dummyData = [
     {
       title: "Todo 1",
@@ -77,6 +51,19 @@ const Home = () => {
     },
   ];
 
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const { data, err } = await getTods();
+      debugger;
+      if (data) {
+        setTodosData(data.data);
+      } else if (err) {
+        console.log(err);
+      }
+    };
+    fetchTodos();
+  }, []);
+
   return (
     <div className="text-center my-5">
       <h2 className="my-5">Todo List Using MERN Stack</h2>
@@ -101,7 +88,7 @@ const Home = () => {
         style={{ maxHeight: "65vh", overflowY: "scroll" }}
         container
       >
-        {dummyData.map((item) => (
+        {todosData.map((item) => (
           <Grid item lg={3}>
             <CardDisplay className="col-lg-4" todoInfo={item} />
           </Grid>
