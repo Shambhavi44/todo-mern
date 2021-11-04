@@ -5,5 +5,6 @@ const todoCtrl = require("../controllers/todo-ctrl");
 
 router.post("/todo/save", todoCtrl.createItem);
 router.get("/todo/get", todoCtrl.getTodos);
+router.post("/todo/update/:id", todoCtrl.updateTodos);
 
 module.exports = router;

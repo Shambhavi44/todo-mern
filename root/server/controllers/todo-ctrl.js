@@ -8,6 +8,8 @@ createItem = (req, res) => {
       error: "You must provide an item",
     });
   }
+  body.todoId =
+    new Date().getTime().toString(36) + Math.random().toString(36).slice(2);
 
   const todo = new Todo(body);
 
@@ -44,4 +46,28 @@ getTodos = async (req, res) => {
   }).catch((err) => console.log(err));
 };
 
-module.exports = { createItem, getTodos };
+updateTodos = async (req, res) => {
+  await Todo.findById(req.params.id, (err, todo) => {
+    if (!todo) {
+      return res
+        .status(404)
+        .send({ message: "Data not found", success: false });
+    } else {
+      todo.description = req.body.description;
+      todo.title = req.body.title;
+      todo.completed = req.body.completed;
+      todo
+        .save()
+        .then((todo) => {
+          res
+            .status(200)
+            .json({ success: true, message: "Todo updated successfully" });
+        })
+        .catch((error) => {
+          res.status(400).json({ success: false, error });
+        });
+    }
+  });
+};
+
+module.exports = { createItem, getTodos, updateTodos };

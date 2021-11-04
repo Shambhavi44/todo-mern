@@ -5,7 +5,8 @@ const Todo = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
-    date: { type: Date },
+    status: { type: String, required: true },
+    todoId: { type: String, required: true },
   },
   { timestamps: true }
 );
