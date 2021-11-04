@@ -5,7 +5,7 @@ createItem = (req, res) => {
   if (!body) {
     return res.status(400).json({
       success: false,
-      error: "You must provide a item",
+      error: "You must provide an item",
     });
   }
 
@@ -15,42 +15,32 @@ createItem = (req, res) => {
     return res.status(400).json({ success: false, error: err });
   }
 
-  todo.save().then(() => {
-    return res
-      .status(200)
-      .json({
+  todo
+    .save()
+    .then(() => {
+      return res.status(200).json({
         success: true,
         id: todo._id,
         message: "todo item created",
-      })
-      .catch((error) => {
-        return res.status(400).json({
-          success: false,
-          error,
-        });
       });
-  });
+    })
+    .catch((error) => {
+      return res.status(400).json({
+        error,
+        message: "todo item not created",
+      });
+    });
 };
 
 getTodos = async (req, res) => {
   await Todo.find({}, (err, todos) => {
     if (err) {
-      return res.status(400).json({
-        success: false,
-        error: err,
-      });
+      return res.status(400).json({ success: false, error: err });
     }
-
     if (!todos.length) {
-      return res.status(400).json({
-        success: false,
-        error: "Item not found",
-      });
+      return res.status(404).json({ success: false, error: `Item not found` });
     }
-    return res.status(200).json({
-      success: true,
-      data: todos,
-    });
+    return res.status(200).json({ success: true, data: todos });
   }).catch((err) => console.log(err));
 };
 
