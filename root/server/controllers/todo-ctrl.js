@@ -70,4 +70,16 @@ updateTodos = async (req, res) => {
   });
 };
 
-module.exports = { createItem, getTodos, updateTodos };
+deleteTodo = async (req, res) => {
+  await Todo.findByIdAndRemove(req.params.id, (err, todo) => {
+    if (err) {
+      return res.status(404).send({ error: err, success: false });
+    } else {
+      res
+        .status(200)
+        .json({ success: true, message: "Todo deleted successfully" });
+    }
+  });
+};
+
+module.exports = { createItem, getTodos, updateTodos, deleteTodo };
