@@ -55,7 +55,7 @@ updateTodos = async (req, res) => {
     } else {
       todo.description = req.body.description;
       todo.title = req.body.title;
-      todo.completed = req.body.completed;
+      todo.status = req.body.status;
       todo
         .save()
         .then((todo) => {

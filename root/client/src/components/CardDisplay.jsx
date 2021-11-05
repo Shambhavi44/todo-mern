@@ -13,6 +13,7 @@ export default function CardDisplay(props) {
     todoInfo = {},
     onDeleteIconClick = () => {},
     onEditIconClick = () => {},
+    headerColor = "bg-seconday",
   } = props;
   return (
     <Card sx={{ maxWidth: 250 }} className="m-4">
@@ -21,7 +22,7 @@ export default function CardDisplay(props) {
         subheader={todoInfo.date}
         titleTypographyProps={{ variant: "h6" }}
         subheaderTypographyProps={{ variant: "p", color: "white" }}
-        className="sticky-top bg-dark text-light"
+        className={`sticky-top ${headerColor} text-light`}
       />
       <CardContent style={{ maxHeight: 200, overflowY: "auto" }}>
         <Typography variant="body2" color="text.secondary">
@@ -33,14 +34,14 @@ export default function CardDisplay(props) {
         <IconButton
           aria-label="settings"
           className="px-4"
-          onClick={onEditIconClick}
+          onClick={() => onEditIconClick(todoInfo._id)}
         >
           <EditIcon />
         </IconButton>
         <IconButton
           aria-label="settings"
           className="px-4"
-          onClick={onDeleteIconClick}
+          onClick={() => onDeleteIconClick(todoInfo._id)}
         >
           <DeleteIcon />
         </IconButton>

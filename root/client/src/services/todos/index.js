@@ -32,7 +32,7 @@ const updateTodos = (id, reqObj) => {
 
 const deleteTodos = (id) => {
   return serviceUtil
-    .deleteById("/todo/update", id)
+    .remove("/todo/delete", id)
     .then((res) => {
       const data = res && res.data;
       return { data };
