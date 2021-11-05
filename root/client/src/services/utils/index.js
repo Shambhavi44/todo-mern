@@ -4,12 +4,12 @@ const get = (url) => {
   return axiosInstance.get(url);
 };
 
-const post = (url, reqObj, { ...args }) => {
-  return axiosInstance.post(url, reqObj, { ...args });
+const post = (url, reqObj) => {
+  return axiosInstance.post(url, reqObj);
 };
 
-const put = (url, reqObj, { ...args }) => {
-  return axiosInstance.put(url, reqObj, { ...args });
+const put = (url, reqObj) => {
+  return axiosInstance.put(url, reqObj);
 };
 
 const remove = (url, id) => {

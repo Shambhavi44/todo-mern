@@ -10,7 +10,7 @@ const getTods = () => {
     .catch((err) => ({ err }));
 };
 
-const saveTodos = (id, reqObj) => {
+const saveTodos = (reqObj) => {
   return serviceUtil
     .post("/todo/save", reqObj)
     .then((res) => {

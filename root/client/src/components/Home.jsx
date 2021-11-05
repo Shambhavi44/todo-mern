@@ -1,8 +1,62 @@
 import React, { useEffect, useState } from "react";
-import { Button, Grid, Modal, TextField, Typography } from "@mui/material";
+import {
+  Button,
+  Grid,
+  Modal,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Box } from "@mui/system";
 import CardDisplay from "./CardDisplay";
-import { getTods } from "../services/todos/index";
+import Switch from "@mui/material/Switch";
+import { getTods, saveTodos } from "../services/todos/index";
+import { styled } from "@mui/material/styles";
+import { useToasts } from "react-toast-notifications";
+
+const AntSwitch = styled(Switch)(({ theme }) => ({
+  width: 28,
+  height: 16,
+  padding: 0,
+  display: "flex",
+  "&:active": {
+    "& .MuiSwitch-thumb": {
+      width: 15,
+    },
+    "& .MuiSwitch-switchBase.Mui-checked": {
+      transform: "translateX(9px)",
+    },
+  },
+  "& .MuiSwitch-switchBase": {
+    padding: 2,
+    "&.Mui-checked": {
+      transform: "translateX(12px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        opacity: 1,
+        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
+      },
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    transition: theme.transitions.create(["width"], {
+      duration: 200,
+    }),
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 16 / 2,
+    opacity: 1,
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? "rgba(255,255,255,.35)"
+        : "rgba(0,0,0,.25)",
+    boxSizing: "border-box",
+  },
+}));
 
 const Home = () => {
   const style = {
@@ -18,43 +72,13 @@ const Home = () => {
 
   const [open, setOpen] = useState(false);
   const [todosData, setTodosData] = useState([]);
-  const dummyData = [
-    {
-      title: "Todo 1",
-      description: "This is todo 1 description",
-      id: "1",
-      date: "Sept 1 2021",
-    },
-    {
-      title: "Todo 4",
-      description: "This is todo 1 description",
-      id: "2",
-      date: "Sept 1 2021",
-    },
-    {
-      title: "Todo 3",
-      description: "This is todo 1 description",
-      id: "4",
-      date: "Sept 1 2021",
-    },
-    {
-      title: "Todo 7",
-      description: "This is todo 3 description",
-      id: "6",
-      date: "Sept 1 2021",
-    },
-    {
-      title: "Todo 7",
-      description: "This is todo 3 description",
-      id: "7",
-      date: "Sept 1 2021",
-    },
-  ];
+  const [todoInfo, setTodoInfo] = useState({});
+
+  const { addToast } = useToasts();
 
   useEffect(() => {
     const fetchTodos = async () => {
       const { data, err } = await getTods();
-      debugger;
       if (data) {
         setTodosData(data.data);
       } else if (err) {
@@ -62,7 +86,18 @@ const Home = () => {
       }
     };
     fetchTodos();
-  }, []);
+  }, [open]);
+
+  const handleAdd = async () => {
+    const { data, err } = await saveTodos(todoInfo);
+    if (data) {
+      addToast("Saved Successfully", { appearance: "success" });
+      setOpen(false);
+      setTodoInfo({});
+    } else if (err) {
+      addToast("Error", { appearance: "error" });
+    }
+  };
 
   return (
     <div className="text-center my-5">
@@ -96,7 +131,10 @@ const Home = () => {
       </Grid>
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setTodoInfo({});
+        }}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -117,6 +155,13 @@ const Home = () => {
               fullWidth
               label="Todo Name"
               variant="filled"
+              value={todoInfo.title}
+              onChange={(e) => {
+                setTodoInfo({
+                  ...todoInfo,
+                  title: e.target.value,
+                });
+              }}
             />
 
             <TextField
@@ -131,20 +176,48 @@ const Home = () => {
               margin="normal"
               variant="filled"
               style={{ marginBottom: 20, marginTop: 20 }}
+              value={todoInfo.description}
+              onChange={(e) => {
+                setTodoInfo({
+                  ...todoInfo,
+                  description: e.target.value,
+                });
+              }}
             />
           </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography>Pending</Typography>
+            <AntSwitch
+              checked={todoInfo.status === "Complete"}
+              inputProps={{ "aria-label": "ant design" }}
+              size="medium"
+              color="success"
+              onChange={(event) =>
+                setTodoInfo({
+                  ...todoInfo,
+                  status: event.target.checked ? "Complete" : "Pending",
+                })
+              }
+            />
+            <Typography>Completed</Typography>
+          </Stack>
           <Grid container justifyContent="flex-end" className="mt-2">
             <Button
               variant="contained"
               className="mt-2 mx-3"
-              onClick={() => setOpen(true)}
+              onClick={() =>
+                setTodoInfo({ title: "", description: "", status: "Pending" })
+              }
             >
               Clear All
             </Button>
             <Button
               variant="contained"
               className="mt-2"
-              onClick={() => setOpen(true)}
+              onClick={handleAdd}
+              disabled={
+                !(todoInfo.title && todoInfo.description && todoInfo.status)
+              }
             >
               Add
             </Button>
