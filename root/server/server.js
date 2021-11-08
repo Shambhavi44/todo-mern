@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const db = require("./db");
 const todoRouter = require("./routes/todo-router");
 const app = express();
-const apiPort = process.env.PORT;
+const apiPort = process.env.PORT || 8080;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
