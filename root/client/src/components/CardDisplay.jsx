@@ -24,7 +24,9 @@ export default function CardDisplay(props) {
         subheaderTypographyProps={{ variant: "p", color: "white" }}
         className={`sticky-top ${headerColor} text-light`}
       />
-      <CardContent style={{ maxHeight: 200, overflowY: "auto" }}>
+      <CardContent
+        style={{ height: 100, overflowY: "auto", maxWidth: 250, wordWrap: 'break-word' }}
+      >
         <Typography variant="body2" color="text.secondary">
           {todoInfo.description}
         </Typography>
